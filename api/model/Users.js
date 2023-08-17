@@ -5,12 +5,13 @@ const db = require("../config")
 const {hash, compare,hashSync} = require('bcrypt')
 const {createToken} = require('../middleware/Authenticate')
 class Users{
+
 fetchUsers(req, res){
     const query =
     `
     SELECT userID , firstName ,
     lastName, gender, userDOB ,
-    emailADD, profileLUrl
+    emailAdd, profileURL
     FROM Users;
     `
     db.query(query,
@@ -27,7 +28,7 @@ fetchUsers(req, res){
     `
     SELECT userID , firstName ,
     lastName, gender, userDOB ,
-    emailADD, profileUrl
+    emailAdd, profileURL
     FROM Users
     WHERE userID = ${req.params.id};
     `
@@ -47,7 +48,7 @@ fetchUsers(req, res){
         const query = `
         SELECT firstName, lastName,
         gender, userDOB, emailAdd, userPass,
-        profileUrl
+        profileURL
         FROM Users
         WHERE emailAdd = ${emailAdd};
         `
@@ -129,6 +130,22 @@ fetchUsers(req, res){
    })
  }
  updateUser(req ,res){
+    const data = req.body
+    if(data.userPass) {
+        data.userPass = 
+        hashSync(data.userPass, 15)
+    }
+    const query = `
+    UPDATE USERS
+    SET ?
+    WHERE userID = ?
+    `
+
+    db.query(query,
+        [data, req.params.id],
+        (err)=>{
+            
+        })
  }
 login(req, res) {
         const {emailAdd, userPass} = req.body
@@ -136,7 +153,7 @@ login(req, res) {
         const query = `
         SELECT firstName, lastName,
         gender, userDOB, emailAdd, userPass,
-        profileUrl
+        profileURL
         FROM Users
         WHERE emailAdd = ?;
         `
