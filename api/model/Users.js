@@ -118,13 +118,9 @@ fetchUsers(req, res){
     //Create cookie
     //httpOnly wants it to be accessed by the browser make it secure & encrypted
     let token = createToken(user)
-    res.cookie("LegitUser", token,
-    {
-        maxAge: 3600000,
-        httpOnly : true
-    })
     res.json({
         status: res.statusCode,
+        token,
         msg:"You are now registered."
     })
    })
@@ -174,12 +170,6 @@ login(req, res) {
                         createToken({
                             emailAdd,
                             userPass
-                        })
-                        // Save a token
-                        res.cookie("LegitUser",
-                        token, {
-                            maxAge: 3600000,
-                            httpOnly: true
                         })
                         if(cResult) {
                             res.json({
